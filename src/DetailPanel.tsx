@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import OtherDetailsTable from "./OtherDetailsTable"; // Import the updated table component
-
+import OtherDetailsTable from "./OtherDetailsTable.tsx"; // Import the updated table component
+ 
 function DetailPanel({ row, data, setData }) {
   const [code, setCode] = useState(row.original.otherDetails.code);
-
+ 
   const handleCodeChange = (event) => {
     setCode(event.target.value);
   };
-
+ 
   const handleSave = () => {
     const updatedData = data.map((item, index) => {
       if (index === parseInt(row.id)) {
@@ -22,7 +22,7 @@ function DetailPanel({ row, data, setData }) {
     setData(updatedData);
   };
   const otherDetails = row.original.otherDetails;
-
+ 
   return (
     <div
       style={{
@@ -63,5 +63,5 @@ function DetailPanel({ row, data, setData }) {
     </div>
   );
 }
-
+ 
 export default DetailPanel;
