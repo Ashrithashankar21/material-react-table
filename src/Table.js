@@ -1,16 +1,41 @@
-import React, { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, IconButton, Tooltip } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useState } from "react";
 import userData from "./data1.json";
 import DetailPanel from "./DetailPanel";
 
 function Table() {
   const [data, setData] = useState(userData);
   const [isCreating, setIsCreating] = useState(false);
+  const [newRow, setNewRow] = useState({
+    device_profile: "",
+    sweep_parameter: "",
+    sweep_type: "",
+    Last_pass_value: "",
+    result: "",
+    max: "",
+    min: "",
+    nominal: "",
+    coarse_step_value: "",
+    operation: "",
+    spec_min: "",
+    spec_max: "",
+    code: "",
+  });
 
   const openDeleteConfirmModal = (row) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -48,6 +73,62 @@ function Table() {
     });
   }
 
+  const handleCreateNewRowChange = (key, value) => {
+    setNewRow({ ...newRow, [key]: value });
+  };
+
+  const handleSaveRow = () => {
+    const {
+      min,
+      max,
+      nominal,
+      coarse_step_value,
+      operation,
+      spec_min,
+      spec_max,
+      code,
+      result,
+      ...mainTableData
+    } = newRow;
+
+    const combinedRow = {
+      ...mainTableData,
+      result,
+      otherDetails: {
+        max,
+        min,
+        coarse_step_value,
+        operation,
+        spec_min,
+        spec_max,
+        nominal,
+        code,
+      },
+    };
+
+    setData([...data, combinedRow]);
+    setIsCreating(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setNewRow({
+      device_profile: "",
+      sweep_parameter: "",
+      sweep_type: "",
+      Last_pass_value: "",
+      result: "",
+      max: "",
+      min: "",
+      nominal: "",
+      coarse_step_value: "",
+      operation: "",
+      spec_min: "",
+      spec_max: "",
+      code: "",
+    });
+  };
+
   const table = useMaterialReactTable({
     muiTableBodyRowProps: {
       style: {
@@ -75,41 +156,36 @@ function Table() {
     renderDetailPanel: ({ row }) => (
       <DetailPanel row={row} data={data} setData={setData} />
     ),
-    onCreatingRowSave: ({ table, values }) => {
-      const newRow = {
-        device_profile: "",
-        sweep_parameter: "",
-        sweep_type: "",
-        max: "",
-        min: "",
-        nominal: "",
-        coarse_step_value: "",
-        operation: "",
-        spec_min: "",
-        spec_max: "",
-        Last_pass_value: "",
-        code: "",
-      };
-      setData([...data, newRow]);
-      table.setCreatingRow(null);
-      setIsCreating(false);
-    },
-    onCreatingRowCancel: () => {
-      setIsCreating(false);
-    },
     renderTopToolbarCustomActions: ({ table }) => (
-      <Button
-        onClick={() => {
-          table.setCreatingRow(true);
-          setIsCreating(true);
-        }}
-      >
-        Create New Row
-      </Button>
+      <Button onClick={() => setIsCreating(true)}>Create New Row</Button>
     ),
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      <MaterialReactTable table={table} />
+
+      <Dialog open={isCreating} onClose={() => setIsCreating(false)}>
+        <DialogTitle>Create New Row</DialogTitle>
+        <DialogContent>
+          {Object.keys(newRow).map((key) => (
+            <TextField
+              key={key}
+              label={key.replace(/_/g, " ").toUpperCase()}
+              value={newRow[key]}
+              onChange={(e) => handleCreateNewRowChange(key, e.target.value)}
+              fullWidth
+              margin="dense"
+            />
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSaveRow}>Save</Button>
+          <Button onClick={() => setIsCreating(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 export default Table;

@@ -1,16 +1,21 @@
-import React from "react";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  TextField,
 } from "@mui/material";
+import React, { useState } from "react";
 
 const OtherDetailsTable = ({ data }) => {
-  const dataArray = [data];
+  const [editIdx, setEditIdx] = useState(-1);
+  const [editKey, setEditKey] = useState(null);
+  const [editedData, setEditedData] = useState({ ...data });
+
+  const dataArray = [editedData];
 
   const columns = Object.keys(data).map((key) => {
     return {
@@ -18,6 +23,26 @@ const OtherDetailsTable = ({ data }) => {
       header: key.charAt(0).toUpperCase() + key.slice(1),
     };
   });
+
+  const handleDoubleClick = (index, key) => {
+    setEditIdx(index);
+    setEditKey(key);
+  };
+
+  const handleChange = (e) => {
+    setEditedData({ ...editedData, [editKey]: e.target.value });
+  };
+
+  const handleBlur = () => {
+    setEditIdx(-1);
+    setEditKey(null);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleBlur();
+    }
+  };
 
   return (
     <TableContainer
@@ -47,6 +72,9 @@ const OtherDetailsTable = ({ data }) => {
             <TableRow key={rowIndex} sx={{ height: "24px" }}>
               {columns.map((column) => {
                 const cellValue = row[column.accessorKey];
+                const isEditing =
+                  editIdx === rowIndex && editKey === column.accessorKey;
+
                 if (column.accessorKey === "code") {
                   const firstLine = cellValue.split("\n")[0];
                   return (
@@ -57,13 +85,38 @@ const OtherDetailsTable = ({ data }) => {
                         fontSize: "14px",
                         marginRight: "8px",
                       }}
+                      onDoubleClick={() =>
+                        handleDoubleClick(rowIndex, column.accessorKey)
+                      }
                     >
-                      {firstLine.length < cellValue.length
-                        ? `${firstLine}...`
-                        : firstLine}
+                      {isEditing ? (
+                        <TextField
+                          value={cellValue}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          onKeyDown={handleKeyDown}
+                          autoFocus
+                          fullWidth
+                          variant="standard"
+                          inputProps={{
+                            style: {
+                              padding: 0,
+                              fontSize: "14px",
+                            },
+                          }}
+                          sx={{
+                            margin: 0,
+                          }}
+                        />
+                      ) : firstLine.length < cellValue.length ? (
+                        `${firstLine}...`
+                      ) : (
+                        firstLine
+                      )}
                     </TableCell>
                   );
                 }
+
                 return (
                   <TableCell
                     key={column.accessorKey}
@@ -72,8 +125,32 @@ const OtherDetailsTable = ({ data }) => {
                       fontSize: "12px",
                       marginRight: "8px",
                     }}
+                    onDoubleClick={() =>
+                      handleDoubleClick(rowIndex, column.accessorKey)
+                    }
                   >
-                    {cellValue}
+                    {isEditing ? (
+                      <TextField
+                        value={cellValue}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        autoFocus
+                        fullWidth
+                        variant="standard"
+                        inputProps={{
+                          style: {
+                            padding: 0,
+                            fontSize: "12px",
+                          },
+                        }}
+                        sx={{
+                          margin: 0,
+                        }}
+                      />
+                    ) : (
+                      cellValue
+                    )}
                   </TableCell>
                 );
               })}
