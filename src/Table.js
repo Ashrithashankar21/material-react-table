@@ -130,28 +130,31 @@ function Table() {
   };
 
   const table = useMaterialReactTable({
-    muiTableBodyRowProps: {
-      style: {
-        padding: "0px",
-        fontSize: "0.875rem",
-      },
-    },
-    muiTableCellProps: {
-      style: {
-        padding: "0px",
-        fontSize: "0.875rem",
-      },
-    },
     columns,
     data,
     enableExpandAll: false,
     enableExpanding: true,
     enableRowSelection: true,
-    enableColumnOrdering: true,
     enableGlobalFilter: true,
+    enableColumnOrdering: false,
     enableEditing: true,
+    // paginationDisplayMode: "pages",
+    muiPaginationProps: {
+      showRowsPerPage: false,
+      showFirstButton: false,
+      showLastButton: false,
+    },
+    enableColumnDragging: false,
+    enableSorting: false,
     editDisplayMode: "cell",
+    enableColumnFilters: false,
+    enableColumnActions: false,
+    enableDensityToggle: false,
     createDisplayMode: "modal",
+    positionToolbarAlertBanner: 'hide',
+    initialState: {
+      density: "compact",
+    },
     positionCreatingRow: "bottom",
     renderDetailPanel: ({ row }) => (
       <DetailPanel row={row} data={data} setData={setData} />

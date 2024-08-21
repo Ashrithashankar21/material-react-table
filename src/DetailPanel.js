@@ -24,7 +24,13 @@ function DetailPanel({ row, data, setData }) {
   const otherDetails = row.original.otherDetails;
 
   return (
-    <>
+    <div
+      style={{
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <OtherDetailsTable data={otherDetails} />
       <div
         style={{
@@ -54,7 +60,7 @@ function DetailPanel({ row, data, setData }) {
           Save
         </Button>
       </div>
-    </>
+    </div>
   );
 }
 
