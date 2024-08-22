@@ -51,6 +51,15 @@ function Table() {
           enableEditing: true,
           width:50,
           Cell: ({ cell, row }) => cell.getValue(),
+          muiEditTextFieldProps: ({ cell, row, table }) => ({
+            onChange: (event) => {
+              setData((prevData) => {
+                const updatedData = [...prevData];
+                updatedData[row.index][cell.column.id] = event.target.value;
+                return updatedData;
+              });
+            },
+          }),
         };
       });
  
@@ -72,6 +81,10 @@ function Table() {
           </Tooltip>
         </Box>
       ),
+      muiEditTextFieldProps: () => ({
+        onChange: (event) => {
+        },
+      }),
     });
   }
  
@@ -79,22 +92,6 @@ function Table() {
     setNewRow({ ...newRow, [key]: value });
   };
 
-  const handleEditingCellChange = (updatedCell) => {
-    const { row, column, getValue } = updatedCell;
-    const newValue = getValue();
-    const rowIndex = row.index;
-    const columnId = column.id;
-
-    setData((prevData) => {
-      const newData = [...prevData];
-      newData[rowIndex] = {
-        ...newData[rowIndex],
-        [columnId]: newValue,
-      };
-      console.log('newData',newData);
-      return newData;
-    });
-  };
 
 
   const handleSaveRow = () => {
@@ -161,7 +158,6 @@ function Table() {
       showFirstButton: false,
       showLastButton: false,
     },
-    onEditingCellChange: handleEditingCellChange,
     enableColumnDragging: false,
     enableSorting: false,
     editDisplayMode: "cell",

@@ -8,16 +8,14 @@ import {
     TableRow,
     TextField,
   } from "@mui/material";
-  import React, { useState } from "react";
+  import React, {  useState } from "react";
    
-  const OtherDetailsTable = ({ data }) => {
+  const OtherDetailsTable = ({otherDetails, data, setData }) => {
+    console.log('otherDetails',otherDetails);
     const [editIdx, setEditIdx] = useState(-1);
     const [editKey, setEditKey] = useState(null);
-    const [editedData, setEditedData] = useState({ ...data });
    
-    const dataArray = [editedData];
-   
-    const columns = Object.keys(data).map((key) => {
+    const columns = Object.keys(otherDetails).map((key) => {
       return {
         accessorKey: key,
         header: key.charAt(0).toUpperCase() + key.slice(1),
@@ -30,7 +28,13 @@ import {
     };
    
     const handleChange = (e) => {
-      setEditedData({ ...editedData, [editKey! as string]: e.target.value });
+      const { value } = e.target;
+      console.log(editIdx, editKey, value);
+      setData((prevData) => {
+        const updatedData = [...prevData];
+        updatedData[editIdx]['otherDetails'][editKey!] = value;
+        return updatedData;
+      });
     };
    
     const handleBlur = () => {
@@ -68,7 +72,7 @@ import {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataArray.map((row, rowIndex) => (
+            {[otherDetails].map((row, rowIndex) => (
               <TableRow key={rowIndex} sx={{ height: "24px" }}>
                 {columns.map((column) => {
                   const cellValue = row[column.accessorKey];

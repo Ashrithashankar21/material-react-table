@@ -14,9 +14,10 @@ function DetailPanel({ rowId, data, setData }) {
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
     setIsModified(true);
-  };
+  };    
 
   const handleSave = () => {
+    console.log('data',data);
     const updatedData = data.map((item, index) => {
       if (index === parseInt(rowId)) {
         return {
@@ -26,8 +27,9 @@ function DetailPanel({ rowId, data, setData }) {
       }
       return item;
     });
-    setData(updatedData);
+    console.log('updatedData',updatedData);
     setIsModified(false);
+    setData(updatedData);
   };
 
   useEffect(() => {
@@ -44,7 +46,7 @@ function DetailPanel({ rowId, data, setData }) {
         flexDirection: "column",
       }}
     >
-      <OtherDetailsTable data={otherDetails} />
+      <OtherDetailsTable otherDetails={otherDetails} setData={setData} data={data}/>
       <div
         style={{
           display: "flex",
