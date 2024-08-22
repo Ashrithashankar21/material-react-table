@@ -156,7 +156,7 @@ function Table() {
     },
     positionCreatingRow: "bottom",
     renderDetailPanel: ({ row }) => (
-      <DetailPanel row={row} data={data} setData={setData} />
+      <DetailPanel rowId={row.id} data={data} setData={setData} />
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <Button onClick={() => setIsCreating(true)}>Create New Row</Button>

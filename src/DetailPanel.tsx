@@ -7,23 +7,18 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/ext-language_tools";
 import 'ace-builds/src-noconflict/theme-monokai';
 
-function DetailPanel({ row, data, setData }) {
-  const [code, setCode] = useState<string>(row.original.otherDetails.code); 
+function DetailPanel({ rowId, data, setData }) {
+  const row = data.find((_item, index) => index === parseInt(rowId));
+  const [code, setCode] = useState<string>(row.otherDetails.code);
   const [isModified, setIsModified] = useState(false);
-
-  const handleCodeChange = (newCode:string) => {
-    console.log('event',newCode);
-
+  const handleCodeChange = (newCode: string) => {
     setCode(newCode);
     setIsModified(true);
-
   };
- 
+
   const handleSave = () => {
-    console.log('data',data);
     const updatedData = data.map((item, index) => {
-      console.log('index',index,row.id,item);
-      if (index === parseInt(row.id)) {
+      if (index === parseInt(rowId)) {
         return {
           ...item,
           otherDetails: { ...item.otherDetails, code },
@@ -31,17 +26,15 @@ function DetailPanel({ row, data, setData }) {
       }
       return item;
     });
-    console.log('updatedData',updatedData);
     setData(updatedData);
     setIsModified(false);
   };
 
   useEffect(() => {
-    setIsModified(code !== row.original.otherDetails.code);
-  }, [code, row.original.otherDetails.code]);
+    setIsModified(code !== row.otherDetails.code);
+  }, [code, row.otherDetails.code]);
 
-
-  const otherDetails = row.original.otherDetails;
+  const otherDetails = row.otherDetails;
 
   return (
     <div
@@ -61,7 +54,6 @@ function DetailPanel({ row, data, setData }) {
           gap: "8px",
         }}
       >
-  
         <AceEditor
           mode="java"
           theme="monokai"
