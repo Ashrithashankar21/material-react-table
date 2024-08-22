@@ -78,7 +78,25 @@ function Table() {
   const handleCreateNewRowChange = (key, value) => {
     setNewRow({ ...newRow, [key]: value });
   };
- 
+
+  const handleEditingCellChange = (updatedCell) => {
+    const { row, column, getValue } = updatedCell;
+    const newValue = getValue();
+    const rowIndex = row.index;
+    const columnId = column.id;
+
+    setData((prevData) => {
+      const newData = [...prevData];
+      newData[rowIndex] = {
+        ...newData[rowIndex],
+        [columnId]: newValue,
+      };
+      console.log('newData',newData);
+      return newData;
+    });
+  };
+
+
   const handleSaveRow = () => {
     const {
       min,
@@ -143,6 +161,7 @@ function Table() {
       showFirstButton: false,
       showLastButton: false,
     },
+    onEditingCellChange: handleEditingCellChange,
     enableColumnDragging: false,
     enableSorting: false,
     editDisplayMode: "cell",
